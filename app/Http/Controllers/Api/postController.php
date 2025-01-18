@@ -64,10 +64,8 @@ class postController extends Controller
             $image = $request->file('image');
             $image->storeAs('public/posts', $image->hashName());
 
-            //delete old image
             Storage::delete('public/posts/' . basename($posts->image));
 
-            //update post with new image
             $posts->update([
                 'image'     => $image->hashName(),
                 'title'     => $request->title,
@@ -80,30 +78,23 @@ class postController extends Controller
             ]);
         }
 
-
-        //return reponse
         return new PostResource(true, 'Data post berhasil ditambahkan', $posts);
     }
 
     public function destroy($id)
     {
-
-        //find post by ID
         $post = Post::find($id);
+
         //delete image
         Storage::delete('public/posts/' . basename($post->image));
-        //delete post
         $post->delete();
-        //return response
+
         return new PostResource(true, 'data post berhasil dihapus', null);
     }
 
     public function show($id)
     {
-
-        //find post by ID
         $post = Post::find($id);
-        //return response
         return new PostResource(true, 'Detail Data!', $post);
     }
 }
